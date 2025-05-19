@@ -30,46 +30,6 @@ typedef struct XrSessionBeginInfoEXT {
 	enum XrColorSpace                colorSpace;
 } XrSessionBeginInfoEXT;
 
-typedef XrResult (XRAPI_PTR *PFN_xrSetEngineVersionPico)(XrInstance instance,const char* version);
-typedef XrResult (XRAPI_PTR *PFN_xrStartCVControllerThreadPico)(XrInstance instance,int headSensorState, int handSensorState);
-typedef XrResult (XRAPI_PTR *PFN_xrStopCVControllerThreadPico)(XrInstance instance,int headSensorState, int handSensorState);
-
-XrInstance mControllerInstance;
-PFN_xrSetEngineVersionPico pfnXrSetEngineVersionPico = NULL;
-PFN_xrStartCVControllerThreadPico pfnXrStartCVControllerThreadPico = NULL;
-PFN_xrStopCVControllerThreadPico pfnXrStopCVControllerThreadPico = NULL;
-
-void InitializeGraphicDeivce(XrInstance mInstance) {
-    mControllerInstance = mInstance;
-    xrGetInstanceProcAddr(mInstance, "xrSetEngineVersionPico", (PFN_xrVoidFunction*)(&pfnXrSetEngineVersionPico));
-    xrGetInstanceProcAddr(mInstance, "xrStartCVControllerThreadPico", (PFN_xrVoidFunction*)(&pfnXrStartCVControllerThreadPico));
-    xrGetInstanceProcAddr(mInstance, "xrStopCVControllerThreadPico", (PFN_xrVoidFunction*)(&pfnXrStopCVControllerThreadPico));
-}
-
-int Pxr_SetEngineVersion(const char *version) {
-    if (pfnXrSetEngineVersionPico != NULL) {
-        return pfnXrSetEngineVersionPico(mControllerInstance,version);
-    } else {
-        return -1;
-    }
-}
-
-int Pxr_StartCVControllerThread(int headSensorState, int handSensorState) {
-    if (pfnXrStartCVControllerThreadPico != NULL) {
-        return pfnXrStartCVControllerThreadPico(mControllerInstance,headSensorState, handSensorState);
-    } else {
-        return -1;
-    }
-}
-
-int Pxr_StopCVControllerThread(int headSensorState, int handSensorState) {
-    if (pfnXrStopCVControllerThreadPico != NULL) {
-        return pfnXrStopCVControllerThreadPico(mControllerInstance,headSensorState, handSensorState);
-    } else {
-        return -1;
-    }
-}
-
 typedef void(GL_APIENTRY* PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC)(
         GLenum target,
         GLenum attachment,
@@ -438,6 +398,8 @@ void ovrApp_Clear(ovrApp* app) {
     app->FakeStageSpace = XR_NULL_HANDLE;
     app->CurrentSpace = XR_NULL_HANDLE;
     app->SessionActive = false;
+    app->pfnGetDisplayRefreshRate = NULL;
+    app->pfnRequestDisplayRefreshRate = NULL;
     app->SwapInterval = 1;
     memset(app->Layers, 0, sizeof(ovrCompositorLayer_Union) * ovrMaxLayerCount);
     app->LayerCount = 0;

@@ -92,6 +92,9 @@ typedef struct {
     XrSpace CurrentSpace;
     GLboolean SessionActive;
 
+    PFN_xrGetDisplayRefreshRateFB pfnGetDisplayRefreshRate;
+    PFN_xrRequestDisplayRefreshRateFB pfnRequestDisplayRefreshRate;
+
     int SwapInterval;
     // These threads will be marked as performance threads.
     int MainThreadTid;
@@ -308,13 +311,5 @@ static inline XrPosef XrPosef_Multiply(const XrPosef a, const XrPosef b) {
 	c.position = XrPosef_Transform(a, b.position);
 	return c;
 }
-
-int Pxr_SetEngineVersion(const char *version);
-
-int Pxr_StartCVControllerThread(int headSensorState, int handSensorState);
-
-int Pxr_StopCVControllerThread(int headSensorState, int handSensorState);
-
-void InitializeGraphicDeivce(XrInstance mInstance);
 
 #endif

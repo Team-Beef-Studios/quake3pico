@@ -457,7 +457,7 @@ ifeq ($(PLATFORM),android)
   SHLIBLDFLAGS = -shared -lm $(LDFLAGS)
 
   THREAD_LIBS =
-  LIBS = -ldl -lm -Wl,--no-undefined -shared
+  LIBS = -ldl -llog -lm -Wl,--no-undefined -shared
 
   CLIENT_LIBS = -lGLESv3 -lOpenSLES
   RENDERER_LIBS = -lGLESv3 -lEGL
