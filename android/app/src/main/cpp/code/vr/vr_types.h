@@ -48,16 +48,6 @@ typedef struct {
 } ovrSwapChain;
 
 typedef struct {
-    EGLint MajorVersion;
-    EGLint MinorVersion;
-    EGLDisplay Display;
-    EGLConfig Config;
-    EGLSurface TinySurface;
-    EGLSurface MainSurface;
-    EGLContext Context;
-} ovrEgl;
-
-typedef struct {
     int Width;
     int Height;
     uint32_t TextureSwapChainLength;
@@ -78,7 +68,6 @@ typedef struct {
 } ovrTrackedController;
 
 typedef struct {
-    ovrEgl Egl;
     GLboolean Focused;
 
     XrInstance Instance;
@@ -164,9 +153,6 @@ typedef enum {
 void ovrApp_Clear(ovrApp* app);
 void ovrApp_Destroy(ovrApp* app);
 GLboolean ovrApp_HandleXrEvents(ovrApp* app);
-
-void ovrEgl_CreateContext(ovrEgl* egl, const ovrEgl* shareEgl);
-void ovrEgl_DestroyContext(ovrEgl* egl);
 
 void ovrFramebuffer_Acquire(ovrFramebuffer* frameBuffer);
 void ovrFramebuffer_Resolve(ovrFramebuffer* frameBuffer);

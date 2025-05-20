@@ -75,9 +75,6 @@ engine_t* VR_Init( ovrJava java )
 
     ovrApp_Clear(&vr_engine.appState);
 
-    // Create the EGL Context
-    ovrEgl_CreateContext(&vr_engine.appState.Egl, NULL);
-
     XrInstanceCreateInfoAndroidKHR instanceCreateInfoAndroid = {XR_TYPE_INSTANCE_CREATE_INFO_ANDROID_KHR};
     instanceCreateInfoAndroid.applicationVM = java.Vm;
     instanceCreateInfoAndroid.applicationActivity = java.ActivityObject;
@@ -102,7 +99,7 @@ engine_t* VR_Init( ovrJava java )
     appInfo.applicationVersion = 0;
     strcpy(appInfo.engineName, "Quake 3 Arena");
     appInfo.engineVersion = 0;
-    appInfo.apiVersion = XR_CURRENT_API_VERSION;
+    appInfo.apiVersion = XR_API_VERSION_1_0;
 
     XrInstanceCreateInfo instanceCreateInfo;
     memset(&instanceCreateInfo, 0, sizeof(instanceCreateInfo));
@@ -306,7 +303,6 @@ void VR_Destroy( engine_t* engine )
 {
     if (engine == &vr_engine) {
         xrDestroyInstance(engine->appState.Instance);
-        ovrEgl_DestroyContext(&engine->appState.Egl);
         ovrApp_Destroy(&engine->appState);
     }
 }
@@ -322,9 +318,9 @@ void VR_EnterVR( engine_t* engine, ovrJava java ) {
     XrGraphicsBindingOpenGLESAndroidKHR graphicsBindingAndroidGLES = {};
     graphicsBindingAndroidGLES.type = XR_TYPE_GRAPHICS_BINDING_OPENGL_ES_ANDROID_KHR;
     graphicsBindingAndroidGLES.next = NULL;
-    graphicsBindingAndroidGLES.display = engine->appState.Egl.Display;
-    graphicsBindingAndroidGLES.config = engine->appState.Egl.Config;
-    graphicsBindingAndroidGLES.context = engine->appState.Egl.Context;
+    graphicsBindingAndroidGLES.display = eglGetCurrentDisplay();
+    graphicsBindingAndroidGLES.config = NULL;
+    graphicsBindingAndroidGLES.context = eglGetCurrentContext();
 
     XrSessionCreateInfo sessionCreateInfo = {};
     memset(&sessionCreateInfo, 0, sizeof(sessionCreateInfo));
