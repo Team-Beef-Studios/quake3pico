@@ -1656,14 +1656,17 @@ void IN_VRSyncActions( void )
         inputInitialized = qtrue;
     }
 
+    // sync action data
     XrActiveActionSet activeActionSet = {};
     activeActionSet.actionSet = actionSet;
     activeActionSet.subactionPath = XR_NULL_PATH;
-    XrActionsSyncInfo syncInfo;
+
+    XrActionsSyncInfo syncInfo = {};
     syncInfo.type = XR_TYPE_ACTIONS_SYNC_INFO;
+    syncInfo.next = NULL;
     syncInfo.countActiveActionSets = 1;
     syncInfo.activeActionSets = &activeActionSet;
-    CHECK_XRCMD(xrSyncActions(VR_GetEngine()->appState.Session, &syncInfo));
+    OXR(xrSyncActions(VR_GetEngine()->appState.Session, &syncInfo));
 }
 
 void IN_VRUpdateControllers( float predictedDisplayTime )

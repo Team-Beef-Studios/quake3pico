@@ -48,16 +48,6 @@ typedef struct {
 } ovrSwapChain;
 
 typedef struct {
-    EGLint MajorVersion;
-    EGLint MinorVersion;
-    EGLDisplay Display;
-    EGLConfig Config;
-    EGLSurface TinySurface;
-    EGLSurface MainSurface;
-    EGLContext Context;
-} ovrEgl;
-
-typedef struct {
     int Width;
     int Height;
     uint32_t TextureSwapChainLength;
@@ -78,7 +68,6 @@ typedef struct {
 } ovrTrackedController;
 
 typedef struct {
-    ovrEgl Egl;
     GLboolean Focused;
 
     XrInstance Instance;
@@ -91,6 +80,9 @@ typedef struct {
     XrSpace FakeStageSpace;
     XrSpace CurrentSpace;
     GLboolean SessionActive;
+
+    PFN_xrGetDisplayRefreshRateFB pfnGetDisplayRefreshRate;
+    PFN_xrRequestDisplayRefreshRateFB pfnRequestDisplayRefreshRate;
 
     int SwapInterval;
     // These threads will be marked as performance threads.
@@ -161,9 +153,6 @@ typedef enum {
 void ovrApp_Clear(ovrApp* app);
 void ovrApp_Destroy(ovrApp* app);
 GLboolean ovrApp_HandleXrEvents(ovrApp* app);
-
-void ovrEgl_CreateContext(ovrEgl* egl, const ovrEgl* shareEgl);
-void ovrEgl_DestroyContext(ovrEgl* egl);
 
 void ovrFramebuffer_Acquire(ovrFramebuffer* frameBuffer);
 void ovrFramebuffer_Resolve(ovrFramebuffer* frameBuffer);
@@ -308,13 +297,5 @@ static inline XrPosef XrPosef_Multiply(const XrPosef a, const XrPosef b) {
 	c.position = XrPosef_Transform(a, b.position);
 	return c;
 }
-
-int Pxr_SetEngineVersion(const char *version);
-
-int Pxr_StartCVControllerThread(int headSensorState, int handSensorState);
-
-int Pxr_StopCVControllerThread(int headSensorState, int handSensorState);
-
-void InitializeGraphicDeivce(XrInstance mInstance);
 
 #endif

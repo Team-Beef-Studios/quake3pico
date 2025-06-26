@@ -243,6 +243,27 @@ void VR_InitRenderer( engine_t* engine ) {
     OXR(xrGetViewConfigurationProperties(
             engine->appState.Instance, engine->appState.SystemId, XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO, &engine->appState.ViewportConfig));
 
+    // Get the refresh rate functions.
+    {
+        OXR(xrGetInstanceProcAddr(
+                engine->appState.Instance,
+                "xrGetDisplayRefreshRateFB",
+                (PFN_xrVoidFunction*)(&engine->appState.pfnGetDisplayRefreshRate)));
+
+        float currentDisplayRefreshRate = 0.0f;
+        OXR(engine->appState.pfnGetDisplayRefreshRate(engine->appState.Session, &currentDisplayRefreshRate));
+        ALOGV("Current System Display Refresh Rate: %f", currentDisplayRefreshRate);
+
+        OXR(xrGetInstanceProcAddr(
+                engine->appState.Instance,
+                "xrRequestDisplayRefreshRateFB",
+                (PFN_xrVoidFunction*)(&engine->appState.pfnRequestDisplayRefreshRate)));
+
+        // Test requesting the system default.
+        OXR(engine->appState.pfnRequestDisplayRefreshRate(engine->appState.Session, 0.0f));
+        ALOGV("Requesting system default display refresh rate");
+    }
+
     uint32_t numOutputSpaces = 0;
     OXR(xrEnumerateReferenceSpaces(engine->appState.Session, 0, &numOutputSpaces, NULL));
 
