@@ -339,7 +339,7 @@ static void VR_processHaptics() {
             vibration.next = NULL;
             vibration.amplitude = vibration_channel_intensity[i];
             vibration.duration = ToXrTime(vibration_channel_duration[i]);
-            vibration.frequency = 3000;
+            vibration.frequency = 150;
             XrHapticActionInfo hapticActionInfo = {};
             hapticActionInfo.type = XR_TYPE_HAPTIC_ACTION_INFO;
             hapticActionInfo.next = NULL;
